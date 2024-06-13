@@ -1,14 +1,36 @@
 import { useState } from "react";
-import { auth } from "../config/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth, googleProvider } from "../config/firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+} from "firebase/auth";
 
 function Auth() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  console.log(auth?.currentUser?.photoURL);
+
   const handleSignIn = async () => {
     try {
       await createUserWithEmailAndPassword(auth, email, password);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const logOut = async () => {
+    try {
+      await signOut(auth);
     } catch (error) {
       console.error(error);
     }
@@ -33,6 +55,18 @@ function Auth() {
         className="rounded bg-blue-500 p-3 text-white transition hover:bg-blue-600"
       >
         Sign In
+      </button>
+      <button
+        onClick={signInWithGoogle}
+        className="rounded bg-blue-500 p-3 text-white transition hover:bg-blue-600"
+      >
+        Google Sign In
+      </button>
+      <button
+        onClick={logOut}
+        className="rounded bg-red-600 p-3 text-white transition hover:bg-red-700"
+      >
+        Log Out
       </button>
     </div>
   );
